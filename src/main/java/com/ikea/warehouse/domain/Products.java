@@ -17,7 +17,7 @@ public class Products {
   private Long id;
   private String name;
 
-  @OneToMany(mappedBy = "order", cascade = ALL)
+  @OneToMany(mappedBy = "product", cascade = ALL)
   private List<ContainArticles> containArticlesList;
 
   public Long getId() {

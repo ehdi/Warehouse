@@ -19,7 +19,7 @@ public class ContainArticles {
 
   @ManyToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "id")
-  private Products products;
+  private Products product;
 
   public Long getId() {
     return id;
@@ -49,11 +49,11 @@ public class ContainArticles {
   }
 
   public Products getProducts() {
-    return products;
+    return product;
   }
 
   public ContainArticles setProducts(Products products) {
-    this.products = products;
+    this.product = products;
     return this;
   }
 }
