@@ -1,5 +1,6 @@
 package com.ikea.warehouse.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -11,6 +12,8 @@ public class Inventory {
   @Id
   @GeneratedValue(strategy=GenerationType.AUTO)
   private Long artId;
+
+  @Column(unique=true)
   private String name;
   private Long stock;
 
