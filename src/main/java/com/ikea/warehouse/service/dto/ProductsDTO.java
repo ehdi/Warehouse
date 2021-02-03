@@ -1,10 +1,12 @@
 package com.ikea.warehouse.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 public class ProductsDTO {
 
+  @JsonIgnore
   private Long id;
   private String name;
   @JsonProperty("contain_articles")
