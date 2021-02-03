@@ -6,6 +6,8 @@ import com.ikea.warehouse.repository.InventoryRepository;
 import com.ikea.warehouse.service.InventoryService;
 import com.ikea.warehouse.service.dto.InventoryDTO;
 import com.ikea.warehouse.service.mapper.InventoryMapper;
+import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -36,7 +38,7 @@ public class InventoryServiceImpl implements InventoryService {
   @Override
   public InventoryDTO update(InventoryDTO inventoryDTO) {
     log.debug("Request to update an item in inventory : {}", inventoryDTO);
-    inventoryRepository.findById(inventoryDTO.getArtId())
+    return inventoryRepository.findById(inventoryDTO.getArtId())
         .map(inventoryItem -> {
           inventoryItem.setName(inventoryDTO.getName());
           inventoryItem.setStock(inventoryDTO.getStock());
@@ -44,7 +46,18 @@ public class InventoryServiceImpl implements InventoryService {
         })
         .map(inventoryMapper::toDTO)
         .orElseThrow(ItemNotFoundException::new);
-    return null;
+  }
+
+  @Override
+  public List<InventoryDTO> findAll() {
+    log.debug("Request to fet all item of inventory");
+    return inventoryMapper.toDTO(inventoryRepository.findAll());
+  }
+
+  @Override
+  public Optional<InventoryDTO> findById(Long id) {
+    log.debug("Request to fet all item of inventory");
+    return inventoryRepository.findById(id).map(inventoryMapper::toDTO);
   }
 
 }
