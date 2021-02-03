@@ -3,6 +3,7 @@ server:
 
 spring:
   application:
-    name: @name@
+    name: warehouse
   datasource:
-    url: jdbc:h2:mem:jpa3
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:warehouse;DB_CLOSE_DELAY=-1
