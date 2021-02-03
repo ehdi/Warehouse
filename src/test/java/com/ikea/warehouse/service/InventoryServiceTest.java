@@ -1,15 +1,8 @@
 package com.ikea.warehouse.service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ikea.warehouse.domain.Inventory;
 import com.ikea.warehouse.exception.ItemNotFoundException;
 import com.ikea.warehouse.service.dto.InventoryDTO;
-import com.ikea.warehouse.service.dto.InventoryListDTO;
-import java.io.IOException;
-import java.io.InputStream;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,28 +17,6 @@ public class InventoryServiceTest {
 
   @Autowired
   private InventoryService inventoryService;
-
-  @BeforeEach
-  public void setUp(){
-    loadInventoryData();
-  }
-
-  private void loadInventoryData(){
-    ObjectMapper mapper = new ObjectMapper();
-    TypeReference<InventoryListDTO> typeReference = new TypeReference<>(){};
-    InputStream inputStream = TypeReference.class.getResourceAsStream("/data/inventory.json");
-    try {
-      InventoryListDTO inventoriesDTO = mapper.readValue(inputStream,typeReference);
-      inventoriesDTO.getInventory().forEach(inventoryJson -> {
-        Inventory inventory = new Inventory();
-        inventory.setName(inventoryJson.getName());
-        inventory.setStock(inventoryJson.getStock());
-        inventoryService.save(inventoryJson);
-      });
-    } catch (IOException e){
-      System.out.println("Unable to save inventories: " + e.getMessage());
-    }
-  }
 
 
   @Test
@@ -66,6 +37,11 @@ public class InventoryServiceTest {
         .orElseThrow(ItemNotFoundException::new);
 
     Assertions.assertEquals(14, inventoryDTO.getStock());
+  }
+
+  @Test
+  public void findByArtIDInventory_ShouldReturnOneItem() {
+    Assertions.assertEquals(true, inventoryService.findByArtID(1L).isPresent());
   }
 
 }
