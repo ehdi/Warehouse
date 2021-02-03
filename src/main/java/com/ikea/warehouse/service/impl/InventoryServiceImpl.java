@@ -27,6 +27,13 @@ public class InventoryServiceImpl implements InventoryService {
   }
 
   @Override
+  public Optional<InventoryDTO> findByArtID(Long artId) {
+    log.debug("Request to find an item by art id : {}", artId);
+    return inventoryRepository.findById(artId)
+        .map(inventoryMapper::toDTO);
+  }
+
+  @Override
   public InventoryDTO save(InventoryDTO inventoryDTO) {
     log.debug("Request to save an item in inventory : {}", inventoryDTO);
     Inventory savedItem = inventoryRepository.save(
