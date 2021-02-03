@@ -1,11 +1,12 @@
 package com.ikea.warehouse.service;
 
+import com.ikea.warehouse.domain.Products;
 import com.ikea.warehouse.service.dto.ProductsDTO;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import java.util.List;
 
 public interface ProductsService {
 
-  Page<ProductsDTO> getAllProducts(Pageable pageable);
+  List<Products> getAllProducts();
+  ProductsDTO save(ProductsDTO productsDTO);
 
 }
