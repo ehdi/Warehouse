@@ -1,7 +1,10 @@
 package com.ikea.warehouse.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class InventoryDTO {
 
+  @JsonProperty("art_id")
   private Long artId;
   private String name;
   private Long stock;
