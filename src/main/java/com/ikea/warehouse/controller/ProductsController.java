@@ -22,7 +22,7 @@ public class ProductsController {
   /**
    * List of Products based on the quantity of inventory
    *
-   * @return list of allotments
+   * @return list of products
    */
   @GetMapping("/all")
   public ResponseEntity<Map<String, List<ProductsDTO>>> getAllProducts() {
