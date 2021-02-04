@@ -2,6 +2,7 @@ package com.ikea.warehouse.controller;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -11,12 +12,19 @@ import capital.scalable.restdocs.jackson.JacksonResultHandlers;
 import capital.scalable.restdocs.response.ResponseModifyingPreprocessors;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ikea.warehouse.service.ContainArticlesService;
+import com.ikea.warehouse.config.ApplicationStartup;
+import com.ikea.warehouse.domain.Inventory;
+import com.ikea.warehouse.exception.ItemNotFoundException;
+import com.ikea.warehouse.repository.InventoryRepository;
+import com.ikea.warehouse.repository.ProductsRepository;
 import com.ikea.warehouse.service.InventoryService;
 import com.ikea.warehouse.service.ProductsService;
+import com.ikea.warehouse.service.dto.InventoryDTO;
 import com.ikea.warehouse.service.dto.ProductsDTO;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -51,13 +59,19 @@ public class ProductsControllerIntegrationTest {
   private ObjectMapper objectMapper;
 
   @Autowired
-  private InventoryService inventoryService;
-
-  @Autowired
   private ProductsService productsService;
 
   @Autowired
-  private ContainArticlesService containArticlesService;
+  private InventoryService inventoryService;
+
+  @Autowired
+  private ApplicationStartup applicationStartup;
+
+  @Autowired
+  private ProductsRepository productsRepository;
+
+  @Autowired
+  private InventoryRepository inventoryRepository;
 
   private MockMvc mockMvc;
 
@@ -98,6 +112,15 @@ public class ProductsControllerIntegrationTest {
                         AutoDocumentation.methodAndPath(),
                         AutoDocumentation.section()))
             .build();
+
+    applicationStartup.loadInventoryData();
+    applicationStartup.loadProductsData();
+  }
+
+  @AfterEach
+  public void deleteProductsFromDB() {
+    productsRepository.deleteAll();
+    inventoryRepository.deleteAll();
   }
 
 
@@ -123,6 +146,23 @@ public class ProductsControllerIntegrationTest {
       Assertions.assertEquals(3, entry.getValue().size());
       Assertions.assertEquals(1,productsDTOS.get(1).getContainArticlesList().size());
     }
+  }
+
+  @Test
+  public void productDelete_ShouldRemoveProductAndUpdateInventory() throws Exception {
+    MvcResult mvcResult = this.mockMvc.perform(
+        delete("/v1/products/remove/Dinning Table"))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andReturn();
+
+    List<ProductsDTO> allProducts = productsService.getAllProducts();
+    Assertions.assertEquals(3, allProducts.size());
+
+    InventoryDTO inventoryDTO = inventoryService.findById(1L)
+        .orElseThrow(ItemNotFoundException::new);
+
+    Assertions.assertEquals(4, inventoryDTO.getStock());
   }
 
 }

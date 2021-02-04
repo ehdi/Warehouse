@@ -1,8 +1,12 @@
 package com.ikea.warehouse.service;
 
+import com.ikea.warehouse.config.ApplicationStartup;
 import com.ikea.warehouse.exception.ItemNotFoundException;
+import com.ikea.warehouse.repository.InventoryRepository;
 import com.ikea.warehouse.service.dto.InventoryDTO;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,6 +22,22 @@ public class InventoryServiceTest {
   @Autowired
   private InventoryService inventoryService;
 
+  @Autowired
+  private InventoryRepository inventoryRepository;
+
+  @Autowired
+  private ApplicationStartup applicationStartup;
+
+  @BeforeEach
+  public void setUp(){
+    applicationStartup.loadInventoryData();
+    applicationStartup.loadProductsData();
+  }
+
+  @AfterEach
+  public void deleteProductsFromDB() throws InterruptedException {
+    inventoryRepository.deleteAll();
+  }
 
   @Test
   public void fetchAllInventory_ShouldReturnTotalNumber() {

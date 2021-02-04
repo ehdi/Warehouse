@@ -14,6 +14,7 @@ import java.io.InputStream;
 import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -23,21 +24,26 @@ public class ApplicationStartup {
 
   private final InventoryService inventoryService;
   private final ContainArticlesService containArticlesService;
+  private final Environment environment;
 
   public ApplicationStartup(InventoryService inventoryService,
-      ContainArticlesService containArticlesService) {
+      ContainArticlesService containArticlesService,
+      Environment environment) {
     this.inventoryService = inventoryService;
     this.containArticlesService = containArticlesService;
+    this.environment = environment;
   }
 
   @PostConstruct
   void postConstruct(){
-    log.info("Initiate DB");
-    loadInventoryData();
-    loadProductsData();
+    if(checkTestProfile()) {
+      log.info("Initiate DB");
+      loadInventoryData();
+      loadProductsData();
+    }
   }
 
-  private void loadInventoryData(){
+  public void loadInventoryData(){
     ObjectMapper mapper = new ObjectMapper();
     TypeReference<InventoryListDTO> typeReference = new TypeReference<>(){};
     InputStream inputStream =
@@ -56,7 +62,7 @@ public class ApplicationStartup {
     }
   }
 
-  private void loadProductsData(){
+  public void loadProductsData(){
     ObjectMapper mapper = new ObjectMapper();
     TypeReference<ProductsListDTO> typeReference = new TypeReference<>(){};
     InputStream inputStream =
@@ -83,6 +89,15 @@ public class ApplicationStartup {
     } catch (IOException e){
       System.out.println("Unable to save products: " + e.getMessage());
     }
+  }
+
+  private boolean checkTestProfile() {
+    String[] activeProfiles = environment.getActiveProfiles();
+    for (String activeProfile : activeProfiles) {
+      if (activeProfile.contains("test"))
+        return false;
+    }
+    return true;
   }
 
 }
