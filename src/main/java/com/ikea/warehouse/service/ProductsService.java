@@ -11,5 +11,6 @@ public interface ProductsService {
   ProductsDTO save(ProductsDTO productsDTO);
   Optional<ProductsDTO> findByName(String name);
   Map<String, List<ProductsDTO>> getProductByInventoryQuantity();
+  void remove(String name);
 
 }

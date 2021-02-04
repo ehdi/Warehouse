@@ -76,12 +76,14 @@ public class ProductsServiceImpl implements ProductsService {
   @Transactional
   @Override
   public Optional<ProductsDTO> findByName(String name) {
+    log.debug("Request to find by name : {}", name);
     return productsRepository.findByName(name)
     .map(productsMapper::toDTO);
   }
 
   @Override
   public Map<String, List<ProductsDTO>> getProductByInventoryQuantity() {
+    log.debug("Request to get product by inventory quantity");
     List<ProductsDTO> allProducts = this.getAllProducts();
 
     return allProducts.stream()
@@ -101,6 +103,31 @@ public class ProductsServiceImpl implements ProductsService {
           return productStatus.get();
         })
         .collect(groupingBy(ProductsDTO::getName));
+  }
+
+  @Transactional
+  @Override
+  public void remove(String name) {
+    log.debug("Request to remove a product : {}", name);
+    productsRepository.findAllByName(name)
+        .map( products -> {
+          if(products.size() == 0) {
+            throw new ItemNotFoundException();
+          }else {
+
+            products.forEach(productItem -> {
+              productItem.getContainArticlesList().forEach(containArticles ->{
+                InventoryDTO inventoryDTO = new InventoryDTO();
+                inventoryDTO.setArtId(containArticles.getArtId());
+                inventoryDTO.setStock(containArticles.getAmountOf());
+                inventoryService.update(inventoryDTO);
+              });
+            });
+
+            return products;
+          }
+        });
+    productsRepository.deleteAllByName(name);
   }
 
 }
