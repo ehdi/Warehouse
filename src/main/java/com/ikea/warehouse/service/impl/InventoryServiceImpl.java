@@ -47,8 +47,8 @@ public class InventoryServiceImpl implements InventoryService {
     log.debug("Request to update an item in inventory : {}", inventoryDTO);
     return inventoryRepository.findById(inventoryDTO.getArtId())
         .map(inventoryItem -> {
-          inventoryItem.setName(inventoryDTO.getName());
           inventoryItem.setStock(inventoryDTO.getStock());
+          inventoryRepository.save(inventoryItem);
           return inventoryItem;
         })
         .map(inventoryMapper::toDTO)
