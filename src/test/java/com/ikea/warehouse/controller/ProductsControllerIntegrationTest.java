@@ -13,7 +13,6 @@ import capital.scalable.restdocs.response.ResponseModifyingPreprocessors;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ikea.warehouse.config.ApplicationStartup;
-import com.ikea.warehouse.domain.Inventory;
 import com.ikea.warehouse.exception.ItemNotFoundException;
 import com.ikea.warehouse.repository.InventoryRepository;
 import com.ikea.warehouse.repository.ProductsRepository;
@@ -23,7 +22,6 @@ import com.ikea.warehouse.service.dto.InventoryDTO;
 import com.ikea.warehouse.service.dto.ProductsDTO;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,6 +37,7 @@ import org.springframework.restdocs.cli.CliDocumentation;
 import org.springframework.restdocs.http.HttpDocumentation;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.operation.preprocess.Preprocessors;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -48,6 +47,7 @@ import org.springframework.web.context.WebApplicationContext;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 @SpringBootTest
+@DirtiesContext
 public class ProductsControllerIntegrationTest {
 
   private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -104,10 +104,7 @@ public class ProductsControllerIntegrationTest {
                         CliDocumentation.curlRequest(),
                         HttpDocumentation.httpRequest(),
                         HttpDocumentation.httpResponse(),
-                        AutoDocumentation.requestFields(),
-                        AutoDocumentation.responseFields(),
                         AutoDocumentation.pathParameters(),
-                        AutoDocumentation.requestParameters(),
                         AutoDocumentation.description(),
                         AutoDocumentation.methodAndPath(),
                         AutoDocumentation.section()))
@@ -120,7 +117,6 @@ public class ProductsControllerIntegrationTest {
   @AfterEach
   public void deleteProductsFromDB() {
     productsRepository.deleteAll();
-    inventoryRepository.deleteAll();
   }
 
 
@@ -150,7 +146,7 @@ public class ProductsControllerIntegrationTest {
 
   @Test
   public void productDelete_ShouldRemoveProductAndUpdateInventory() throws Exception {
-    MvcResult mvcResult = this.mockMvc.perform(
+    this.mockMvc.perform(
         delete("/v1/products/remove/Dinning Table"))
         .andDo(print())
         .andExpect(status().isOk())

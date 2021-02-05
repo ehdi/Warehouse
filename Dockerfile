@@ -12,7 +12,7 @@ COPY ./src ./src
 
 # Build application
 
-RUN mvn package -DskipTests
+RUN mvn package
 
 #
 # Package stage

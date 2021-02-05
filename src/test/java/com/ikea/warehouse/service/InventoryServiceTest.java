@@ -4,6 +4,7 @@ import com.ikea.warehouse.config.ApplicationStartup;
 import com.ikea.warehouse.exception.ItemNotFoundException;
 import com.ikea.warehouse.repository.InventoryRepository;
 import com.ikea.warehouse.service.dto.InventoryDTO;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,11 +13,13 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ExtendWith({SpringExtension.class})
 @SpringBootTest
+@DirtiesContext
 public class InventoryServiceTest {
 
   @Autowired
@@ -34,7 +37,7 @@ public class InventoryServiceTest {
     applicationStartup.loadProductsData();
   }
 
-  @AfterEach
+  @AfterAll
   public void deleteProductsFromDB() throws InterruptedException {
     inventoryRepository.deleteAll();
   }
