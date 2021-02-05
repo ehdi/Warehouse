@@ -8,7 +8,6 @@ import com.ikea.warehouse.exception.ItemNotFoundException;
 import com.ikea.warehouse.repository.ProductsRepository;
 import com.ikea.warehouse.service.dto.ProductsDTO;
 import java.util.List;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
