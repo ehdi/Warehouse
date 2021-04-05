@@ -1,0 +1,16 @@
+server:
+  port: ${SERVER_PORT:8181}
+
+spring:
+  application:
+    name: warehouse-inventory
+  data:
+    mongodb:
+      host: localhost
+      port: 0
+      database: inventory
+
+logging:
+  level:
+    com.ika.warehouseinventory: DEBUG
+    ROOT: ERROR

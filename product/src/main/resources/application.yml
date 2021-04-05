@@ -1,0 +1,22 @@
+server:
+  port: ${SERVER_PORT:8282}
+
+spring:
+  application:
+    name: warehouse-product
+  data:
+    mongodb:
+      host: localhost
+      port: 0
+      database: product
+
+application:
+  external:
+    inventory: http://localhost:8181
+    pricing: http://localhost:8383
+
+
+logging:
+  level:
+    com.ika.warehouseproduct: DEBUG
+    ROOT: ERROR

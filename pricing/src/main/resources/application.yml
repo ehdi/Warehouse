@@ -1,0 +1,11 @@
+server:
+  port: ${SERVER_PORT:8383}
+
+spring:
+  application:
+    name: warehouse-pricing
+
+logging:
+  level:
+    com.ika.warehousepricing: DEBUG
+    ROOT: ERROR

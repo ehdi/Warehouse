@@ -1,0 +1,5 @@
+= Warehouse Inventory RESTful Docs
+
+include::{snippets}/inventory-fetch-all_-should-return-list-of-items/auto-section.adoc[]
+.response
+

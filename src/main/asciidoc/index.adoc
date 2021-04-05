@@ -1,7 +1,0 @@
-= Warehouse REST Docs
-Example output of REST API at http://localhost:8080
-
-include::{snippets}/products-fetch-all_-should-return-list-of-products/auto-section.adoc[]
-.response
-include::{snippets}/product-delete_-should-remove-product-and-update-inventory/auto-section.adoc[]
-
